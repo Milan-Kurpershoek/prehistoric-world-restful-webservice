@@ -20,14 +20,16 @@ router.use((req,res, next)=>{
     }
 })
 
-router.post("/seed", async (req, res) => {
+router.post("/", async (req, res, next) => {
+
+    if(req.body?.method && req.body.method === "SEED" ){
 
     const prehistoricAnimals = []
     await PrehistoricAnimal.deleteMany({})
 
-    // const amount = req.body?.amount ?? 10;
+    const amount = req.body?.amount ?? 0;
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < amount; i++) {
         const prehistoricAnimal = PrehistoricAnimal({
             genus: faker.animal.petName(),
             era: faker.date.past(),
@@ -38,6 +40,10 @@ router.post("/seed", async (req, res) => {
         prehistoricAnimals.push(prehistoricAnimal)
     }
     res.json(prehistoricAnimals)
+
+    }else{
+        next()
+    }
 })
 
 router.options("/",(req,res)=>{
