@@ -39,7 +39,7 @@ router.post("/", async (req, res, next) => {
 
         prehistoricAnimals.push(prehistoricAnimal)
     }
-    res.json(prehistoricAnimals)
+        res.status(201).json(prehistoricAnimals)
 
     }else{
         next()
@@ -58,20 +58,23 @@ router.get("/", async (req, res) => {
 
     const prehistoricAnimals = await PrehistoricAnimal.find({},'-family')
 
-    const prehistoricAnimalsCollection = {
-        items: prehistoricAnimals,
-        _links: {
-            self: {
-                href: process.env.BASE_URI
-            },
-            collection: {
-                href: process.env.BASE_URI
+    if (prehistoricAnimals.length === 0){
+        res.status(404).json({message: "Collection not found."})
+    }else {
+
+        const prehistoricAnimalsCollection = {
+            items: prehistoricAnimals,
+            _links: {
+                self: {
+                    href: process.env.BASE_URI
+                },
+                collection: {
+                    href: process.env.BASE_URI
+                }
             }
         }
+        res.status(200).json(prehistoricAnimalsCollection);
     }
-
-    res.json(prehistoricAnimalsCollection);
-
 });
 
 //Create
@@ -105,14 +108,14 @@ router.get("/:id", async (req, res) => {
     try{
         const prehistoricAnimal = await PrehistoricAnimal.findById(prehistoricAnimalId);
 
-        if (prehistoricAnimal){
-            res.json(prehistoricAnimal)
-        }else {
-            res.status(404).send()
+        if (!prehistoricAnimal){
+            res.status(404).json({message: "Resource not found."})
+        }else{
+            res.status(200).json(prehistoricAnimal)
         }
 
     }catch (e){
-        res.status(404).send()
+        res.status(404).json({message: "Resource not found."})
     }
 })
 
@@ -129,10 +132,15 @@ router.put("/:id", async (req, res)=>{
             new:true,
             runValidators:true
         })
-        res.status(200).json(updatePrehistoricAnimal)
+
+        if (!updatePrehistoricAnimal){
+            res.status(404).json({message: "Resource not found."})
+        }else{
+            res.status(200).json(updatePrehistoricAnimal)
+        }
 
     }catch (e){
-        res.status(404).json({message: "All fields are required."})
+        res.status(400).json({message: "All fields are required."})
     }
 })
 
