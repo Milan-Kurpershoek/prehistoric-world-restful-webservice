@@ -4,6 +4,11 @@ const prehistoricAnimalSchema = new mongoose.Schema({
         genus: { type: String, required: true },
         era: { type: String, required: true },
         family: { type: String, required: true },
+        filename: { type: String },
+        path: { type: String},
+        size: { type: Number },
+
+
     },
     {
         toJSON: {
@@ -12,7 +17,7 @@ const prehistoricAnimalSchema = new mongoose.Schema({
             transform: (doc, ret) => {
                 ret._links = {
                     self: {
-                        href: `${process.env.BASE_URI}${ret._id}`,
+                        href: `${process.env.BASE_URI}${ret._id}`
                     },
                     collection: {
                         href: `${process.env.BASE_URI}`,

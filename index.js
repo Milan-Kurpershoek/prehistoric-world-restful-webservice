@@ -1,6 +1,7 @@
 import express from "express";
 import router from "./routes/prehistoricAnimalsRouter.js";
 import mongoose from "mongoose";
+import * as path from "node:path";
 
 const app = express();
 
@@ -10,6 +11,11 @@ try {
     app.use(express.json());
 
     app.use(express.urlencoded({ extended: true }));
+
+    app.use(
+        "/prehistoric-animals/uploads",
+        express.static(path.join(process.cwd(), "uploads"))
+    );
 
     app.use("/prehistoric-animals", router)
 

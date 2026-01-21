@@ -1,6 +1,7 @@
 import express from "express";
 import PrehistoricAnimal from "../models/prehistoricAnimalModels.js";
 import {faker} from "@faker-js/faker/locale/nl";
+import upload from "./upload.js";
 
 const router =express.Router()
 
@@ -78,12 +79,16 @@ router.get("/", async (req, res) => {
 });
 
 //Create
-router.post("/", async (req, res) => {
+router.post("/", upload.single("prehistoricAnimal"), async (req, res) => {
 
     const prehistoricAnimal = PrehistoricAnimal({
         genus: req.body.genus,
         era: req.body.era,
         family: req.body.family,
+        filename: req.file.filename,
+        path: req.file.path,
+        size:req.file.size,
+
     })
 
     if (!prehistoricAnimal.genus || !prehistoricAnimal.era || !prehistoricAnimal.family) {
