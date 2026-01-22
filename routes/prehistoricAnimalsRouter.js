@@ -81,21 +81,26 @@ router.get("/", async (req, res) => {
 //Create
 router.post("/", upload.single("prehistoricAnimal"), async (req, res) => {
 
+    try{
+
     const prehistoricAnimal = PrehistoricAnimal({
         genus: req.body.genus,
         era: req.body.era,
         family: req.body.family,
-        filename: req.file.filename,
-        path: req.file.path,
-        size:req.file.size,
+        filename: req.file?.filename ?? "",
+        path: req.file?.path ?? "",
+        size:req.file?.size ?? "",
 
     })
 
-    if (!prehistoricAnimal.genus || !prehistoricAnimal.era || !prehistoricAnimal.family) {
+    if (!prehistoricAnimal) {
         res.status(400).json({message: "All fields are required."})
     } else {
         await prehistoricAnimal.save()
         res.status(201).json(prehistoricAnimal)
+    }
+    }catch (e){
+        res.status(400).json({message: "Invallid."})
     }
 })
 

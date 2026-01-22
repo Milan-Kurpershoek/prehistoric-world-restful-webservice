@@ -4,9 +4,9 @@ const prehistoricAnimalSchema = new mongoose.Schema({
         genus: { type: String, required: true },
         era: { type: String, required: true },
         family: { type: String, required: true },
-        filename: { type: String },
-        path: { type: String},
-        size: { type: Number },
+        filename: { type: String, required: false },
+        path: { type: String, required: false },
+        size: { type: Number, required: false },
 
 
     },
