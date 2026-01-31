@@ -2,6 +2,7 @@ import express from "express";
 import PrehistoricAnimal from "../models/prehistoricAnimalModels.js";
 import {faker} from "@faker-js/faker/locale/nl";
 import upload from "./upload.js";
+import {tr} from "@faker-js/faker";
 
 const router =express.Router()
 
@@ -169,5 +170,41 @@ router.delete("/:id", async (req, res)=>{
         res.status(404).send()
     }
 })
+
+router.patch("/:id", async (req, res)=>{
+
+
+    const prehistoricAnimalId = req.params.id;
+    const {genus, era, family} = req.body;
+
+    if (!genus && !era && !family){
+        return res.status(400).json({message: "At least one field must be provided"})
+    }
+
+    try {
+        const partiallyUpdatePrehistoricAnimal = await PrehistoricAnimal.findByIdAndUpdate(
+            prehistoricAnimalId,
+            {
+                ...(genus && {genus}),
+                ...(era && {era}),
+                ...(family && {family}),
+            },
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        if (!partiallyUpdatePrehistoricAnimal){
+            return res.status(404).json({
+                message: "Resource not found"
+            })
+        }else {
+            res.status(200).json(partiallyUpdatePrehistoricAnimal)
+        }
+    }catch (e){
+        res.status(400).json({message: e.message});
+    }
+});
 
 export default router
