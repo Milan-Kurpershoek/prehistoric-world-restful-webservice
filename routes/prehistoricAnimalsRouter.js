@@ -94,12 +94,9 @@ router.post("/", upload.single("prehistoricAnimal"), async (req, res) => {
 
     })
 
-    if (!prehistoricAnimal) {
-        res.status(404).json({message: "Resource not found"})
-    } else {
         await prehistoricAnimal.save()
         res.status(201).json(prehistoricAnimal)
-    }
+
     }catch (e){
         res.status(400).json({message: "All fields are required"})
     }
